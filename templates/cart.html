@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h3 mb-3">購物車</h1>
+
+{% if not items %}
+  <div class="alert alert-info">購物車目前是空的～</div>
+  <a class="btn btn-dark" href="{{ url_for('products') }}">回到商品頁</a>
+{% else %}
+<form action="{{ url_for('update_cart') }}" method="post">
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>商品</th>
+          <th style="width:140px">單價</th>
+          <th style="width:120px">數量</th>
+          <th style="width:140px">小計</th>
+          <th style="width:100px"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for it in items %}
+        <tr>
+          <td class="d-flex align-items-center gap-3">
+            <img src="{{ it.img }}" alt="{{ it.name }}" style="width:72px;height:48px;object-fit:cover">
+            <div>{{ it.name }}</div>
+          </td>
+          <td>NT$ {{ '%.0f'|format(it.price) }}</td>
+          <td>
+            <input class="form-control form-control-sm" type="number" name="qty_{{ it.id }}" value="{{ it.qty }}" min="0">
+          </td>
+          <td>NT$ {{ '%.0f'|format(it.subtotal) }}</td>
+          <td>
+            <form action="{{ url_for('remove_item', pid=it.id) }}" method="post">
+              <button class="btn btn-sm btn-outline-danger">移除</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center">
+    <a class="btn btn-outline-dark" href="{{ url_for('products') }}">繼續購物</a>
+    <div class="h5 mb-0">合計：NT$ {{ '%.0f'|format(total) }}</div>
+  </div>
+
+  <div class="d-flex justify-content-end gap-2 mt-3">
+    <button class="btn btn-outline-secondary" type="submit">更新數量</button>
+  </div>
+</form>
+
+<form action="{{ url_for('checkout') }}" method="post" class="mt-2 text-end">
+  <button class="btn btn-dark">前往結帳（示意）</button>
+</form>
+{% endif %}
+{% endblock %}

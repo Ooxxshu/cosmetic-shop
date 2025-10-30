@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h3 mb-3">商品一覽</h1>
+
+<div class="d-flex gap-2 mb-4">
+  <a class="btn btn-sm {{ 'btn-dark' if not current_cat else 'btn-outline-dark' }}" href="{{ url_for('products') }}">全部</a>
+  {% for c in categories %}
+    <a class="btn btn-sm {{ 'btn-dark' if current_cat==c else 'btn-outline-dark' }}" href="{{ url_for('products', cat=c) }}">{{ c }}</a>
+  {% endfor %}
+</div>
+
+<div class="row g-3">
+  {% for p in items %}
+  <div class="col-12 col-sm-6 col-lg-4">
+    <div class="card h-100">
+      <img src="{{ p.img }}" class="card-img-top" alt="{{ p.name }}">
+      <div class="card-body d-flex flex-column">
+        <h5 class="card-title mb-1">{{ p.name }}</h5>
+        <div class="text-muted small mb-2">{{ p.category }}</div>
+        <p class="card-text flex-grow-1">{{ p.desc }}</p>
+        <div class="d-flex align-items-center justify-content-between">
+          <div class="fs-5">NT$ {{ '%.0f'|format(p.price) }}</div>
+          <form action="{{ url_for('add_to_cart') }}" method="post" class="d-flex align-items-center gap-2">
+            <input type="hidden" name="pid" value="{{ p.id }}">
+            <input class="form-control form-control-sm" type="number" name="qty" value="1" min="1" style="width:80px">
+            <button class="btn btn-sm btn-dark" type="submit">加入購物車</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
