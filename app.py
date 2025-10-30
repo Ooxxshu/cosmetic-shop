@@ -180,6 +180,56 @@ def order_success():
         return redirect(url_for("products"))
     return render_template("order_success.html", order_id=info["order_id"], email=info["email"])
 
+
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+
+# 登入管理初始化
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "admin_login"
+
+# 使用者資料類別
+class User(UserMixin):
+    def __init__(self, id):
+        self.id = id
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User(user_id)
+
+# --- 管理登入區域 ---
+
+@app.route("/admin/login", methods=["GET", "POST"])
+def admin_login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        admin_user = os.getenv("ADMIN_USERNAME", "admin")
+        admin_pass = os.getenv("ADMIN_PASSWORD", "admin123")
+
+        if username == admin_user and password == admin_pass:
+            login_user(User(id=username))
+            flash("登入成功！", "success")
+            return redirect(url_for("admin_dashboard"))
+        else:
+            flash("帳號或密碼錯誤！", "danger")
+
+    return render_template("admin_login.html")
+
+@app.route("/admin/logout")
+@login_required
+def admin_logout():
+    logout_user()
+    flash("已登出。", "info")
+    return redirect(url_for("admin_login"))
+
+@app.route("/admin")
+@login_required
+def admin_dashboard():
+    return render_template("admin_dashboard.html", username=current_user.id)
+
+
 # ----------------- 啟動區 -----------------
 if __name__ == "__main__":
     # 建表 + 種子資料
@@ -189,3 +239,4 @@ if __name__ == "__main__":
 
     debug = os.getenv("FLASK_DEBUG", "0") == "1"
     app.run(debug=debug)
+
