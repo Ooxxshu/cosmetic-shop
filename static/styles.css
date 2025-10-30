@@ -1,0 +1,175 @@
+/* === 全域設定 === */
+body {
+  font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  background-color: #fafafa;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* === 導覽列 === */
+.navbar {
+  background: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  color: #6f42c1 !important;
+}
+
+.navbar-nav .nav-link {
+  font-weight: 500;
+  color: #444 !important;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #6f42c1 !important;
+}
+
+/* === 導覽列購物車按鈕 === */
+.navbar .btn-cart {
+  position: relative;
+  left: auto !important;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 600;
+  border-color: #6f42c1;
+}
+
+.navbar .btn-cart:hover {
+  background-color: #6f42c1;
+  color: #fff;
+}
+
+/* 小圓點徽章（數量） */
+.navbar .btn-cart .cart-count {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  background: #6f42c1;
+  color: #fff;
+  font-size: 0.75rem;
+  line-height: 1;
+  padding: 0.25rem 0.45rem;
+  border-radius: 999px;
+  min-width: 18px;
+  text-align: center;
+}
+
+/* === 首頁區塊 === */
+.hero-section {
+  background: linear-gradient(135deg, #b388ff, #7c4dff);
+  color: white;
+  border-radius: 15px;
+  padding: 3rem 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.hero-section h1 {
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.hero-section p {
+  opacity: 0.9;
+}
+
+/* === 商品列表 === */
+.card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card img {
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  height: 220px;
+  object-fit: cover;
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+.card-title {
+  font-weight: 600;
+  color: #333;
+}
+
+.card-text {
+  color: #777;
+  font-size: 0.9rem;
+}
+
+/* 價格 */
+.price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #6f42c1;
+}
+
+/* === 加入購物車按鈕 === */
+.btn-dark {
+  background-color: #212529;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn-dark:hover {
+  background-color: #6f42c1;
+  color: #fff;
+}
+
+/* === 類別按鈕 === */
+.btn-outline-dark.active {
+  background-color: #6f42c1;
+  color: #fff;
+  border-color: #6f42c1;
+}
+
+/* === 購物車頁面 === */
+.table th,
+.table td {
+  vertical-align: middle;
+}
+
+.alert {
+  border-radius: 10px;
+}
+
+/* === 頁尾 === */
+footer {
+  font-size: 0.9rem;
+  background-color: #fff;
+  border-top: 1px solid #eee;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  color: #666;
+}
+
+/* === 按鈕風格統一 === */
+.btn {
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.btn-outline-dark {
+  border-color: #6f42c1;
+  color: #6f42c1;
+}
+
+.btn-outline-dark:hover {
+  background-color: #6f42c1;
+  color: #fff;
+}
