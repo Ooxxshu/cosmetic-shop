@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="text-center py-5">
+  <h1 class="h3 mb-3">感謝你的訂購！</h1>
+  <p class="mb-1">你的訂單編號：</p>
+  <p class="display-6">{{ order_id }}</p>
+  <p class="text-muted">我們已寄出確認信到 {{ email }}（示意）。</p>
+  <a class="btn btn-dark mt-3" href="{{ url_for('products') }}">繼續逛逛</a>
+</div>
+{% endblock %}

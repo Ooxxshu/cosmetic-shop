@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h4 mb-3">結帳</h1>
+
+{% if not items %}
+  <div class="alert alert-info">購物車是空的，先去挑選商品吧！</div>
+  <a class="btn btn-dark" href="{{ url_for('products') }}">前往商品頁</a>
+{% else %}
+<div class="row g-4">
+  <div class="col-lg-7">
+    <form action="{{ url_for('checkout') }}" method="post" class="needs-validation" novalidate>
+      <div class="mb-3">
+        <label class="form-label">姓名 *</label>
+        <input name="name" class="form-control" required>
+        <div class="invalid-feedback">請填寫姓名</div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email *</label>
+        <input type="email" name="email" class="form-control" required>
+        <div class="invalid-feedback">請填寫有效 Email</div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">收件地址 *</label>
+        <textarea name="address" class="form-control" rows="3" required></textarea>
+        <div class="invalid-feedback">請填寫收件地址</div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">付款方式 *</label>
+        <select name="payment" class="form-select" required>
+          <option value="">請選擇</option>
+          <option value="cod">貨到付款（示意）</option>
+          <option value="card">信用卡（示意）</option>
+        </select>
+        <div class="invalid-feedback">請選擇付款方式</div>
+      </div>
+
+      <button class="btn btn-dark" type="submit">送出訂單</button>
+      <a class="btn btn-outline-secondary" href="{{ url_for('cart') }}">返回購物車</a>
+    </form>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-header fw-bold">訂單摘要</div>
+      <ul class="list-group list-group-flush">
+        {% for it in items %}
+        <li class="list-group-item d-flex justify-content-between">
+          <div>{{ it.name }} × {{ it.qty }}</div>
+          <div>NT$ {{ '%.0f'|format(it.subtotal) }}</div>
+        </li>
+        {% endfor %}
+        <li class="list-group-item d-flex justify-content-between">
+          <div class="fw-bold">合計</div>
+          <div class="fw-bold">NT$ {{ '%.0f'|format(total) }}</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 簡單前端驗證（Bootstrap）
+  (() => {
+    'use strict';
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(form => {
+      form.addEventListener('submit', e => {
+        if (!form.checkValidity()) {
+          e.preventDefault(); e.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  })();
+</script>
+{% endif %}
+{% endblock %}

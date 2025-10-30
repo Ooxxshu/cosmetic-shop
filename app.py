@@ -1,16 +1,12 @@
-
 import os
 from dotenv import load_dotenv
 load_dotenv()
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from decimal import Decimal
-
+import uuid
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY", "dev-secret-change-me")
-app = Flask(__name__)
-app.secret_key = "please-change-this-in-production"  # 之後上線請換掉
-
+app.secret_key = os.getenv("SECRET_KEY", "please-change-this-in-production")
 
 # --- 商品目錄（示範：面膜、護手霜 + 幾個延伸品項） ---
 CATALOG = [
@@ -48,6 +44,7 @@ CATALOG = [
     }
 ]
 
+# ----------------- 工具函式 -----------------
 def _get_cart():
     """從 session 取購物車（dict: {product_id: qty}）"""
     return session.setdefault("cart", {})
@@ -88,14 +85,14 @@ def inject_cart_count():
     count = sum(int(q) for q in cart.values())
     return {"cart_count": count}
 
+# ----------------- 前端頁面 -----------------
 @app.route("/")
 def home():
-    # 先直接導到商品頁
     return redirect(url_for("products"))
 
 @app.route("/products")
 def products():
-    cat = request.args.get("cat")  # ?cat=面膜 / 護手霜
+    cat = request.args.get("cat")
     items = [p for p in CATALOG if (not cat or p["category"] == cat)]
     categories = sorted(set(p["category"] for p in CATALOG))
     return render_template("products.html", items=items, categories=categories, current_cat=cat)
@@ -142,13 +139,47 @@ def remove_item(pid):
         flash("已移除商品", "warning")
     return redirect(url_for("cart"))
 
-@app.route("/checkout", methods=["POST"])
+# ----------------- 結帳流程 -----------------
+@app.route("/checkout", methods=["GET", "POST"])
 def checkout():
-    # 先做示意（之後我們會接金流）
-    session.pop("cart", None)
-    flash("下單成功（示意）。稍後我們會加入實際金流！", "success")
-    return redirect(url_for("products"))
+    # 先抓購物車明細
+    items, total = _cart_detail()
+    if request.method == "GET":
+        return render_template("checkout.html", items=items, total=total)
 
+    # POST：接表單
+    name = (request.form.get("name") or "").strip()
+    email = (request.form.get("email") or "").strip()
+    address = (request.form.get("address") or "").strip()
+    payment = (request.form.get("payment") or "").strip()
+
+    # 基本驗證
+    if not name or not email or not address or not payment:
+        flash("請完整填寫結帳表單。", "danger")
+        return redirect(url_for("checkout"))
+
+    if not items:
+        flash("購物車是空的，請先加入商品。", "warning")
+        return redirect(url_for("products"))
+
+    # 產生簡單訂單編號（示意）
+    order_id = uuid.uuid4().hex[:10].upper()
+
+    # 這裡可接 Email/金流（之後我們再加）
+    session.pop("cart", None)
+
+    # 暫存資訊在 session 用於成功頁顯示（單次）
+    session["last_order"] = {"order_id": order_id, "email": email}
+    return redirect(url_for("order_success"))
+
+@app.route("/order-success")
+def order_success():
+    info = session.pop("last_order", None)
+    if not info:
+        return redirect(url_for("products"))
+    return render_template("order_success.html", order_id=info["order_id"], email=info["email"])
+
+# ----------------- 主程式 -----------------
 if __name__ == "__main__":
     debug = os.getenv("FLASK_DEBUG", "0") == "1"
     app.run(debug=debug)
